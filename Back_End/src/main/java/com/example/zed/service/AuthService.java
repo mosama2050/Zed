@@ -1,6 +1,8 @@
 package com.example.zed.service;
 
 
+import com.example.zed.dto.AuthenticationResponse;
+import com.example.zed.dto.LoginRequest;
 import com.example.zed.dto.RegisterRequest;
 import com.example.zed.exception.SpringRedditException;
 import com.example.zed.model.NotificationEmail;
@@ -8,6 +10,7 @@ import com.example.zed.model.User;
 import com.example.zed.model.VerificationToken;
 import com.example.zed.repository.UserRepository;
 import com.example.zed.repository.VerificationTokenRepository;
+import com.example.zed.security.JwtProvider;
 import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
@@ -33,6 +34,8 @@ public class AuthService {
     private final PasswordEncoder  passwordEncoder;
     private final VerificationTokenRepository verificationTokenRepository ;
     private final MailService mailService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Transactional // to interacting with relational DB
     public void signup(RegisterRequest registerRequest) {
@@ -42,7 +45,7 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode( registerRequest.getPassword()));
         user.setCreated(now());
         user.setEnabled(false);
-        userRepository.save(user);
+            userRepository.save(user);
         log.info("User Registered Successfully, Sending Authentication Email");
 
         String token = generateVerificationToken(user);
@@ -71,10 +74,18 @@ public class AuthService {
 
     }
     @Transactional
-    private void fetchUserAndEnable(VerificationToken verificationToken) {
+     private void fetchUserAndEnable(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new SpringRedditException("User Not Found with id - " + username));
         user.setEnabled(true);
         userRepository.save(user);
+    }
+
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+        String token = jwtProvider.generateToken(authenticate);
+        return new AuthenticationResponse(token ,loginRequest.getUsername());
     }
 }
