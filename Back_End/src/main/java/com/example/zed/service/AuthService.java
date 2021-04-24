@@ -2,6 +2,7 @@ package com.example.zed.service;
 
 
 import com.example.zed.dto.RegisterRequest;
+import com.example.zed.exception.SpringRedditException;
 import com.example.zed.model.NotificationEmail;
 import com.example.zed.model.User;
 import com.example.zed.model.VerificationToken;
@@ -48,7 +49,7 @@ public class AuthService {
         mailService.sendMail(new NotificationEmail("please activate your account " ,
                 user.getEmail(),
                 "Thank you for signing up to Spring Reddit, please click on the below url to activate your account :"+
-                        "http://localhost:8080/api/auth/accountVerification"+token));
+                        "http://localhost:8080/api/auth/accountVerification/"+token));
 //        String message = mailContentBuilder.build("Thank you for signing up to Spring Reddit, please click on the below url to activate your account : "
 //                + ACTIVATION_EMAIL + "/" + token);
 
@@ -61,5 +62,19 @@ public class AuthService {
         verificationToken.setUser(user);
         verificationTokenRepository.save(verificationToken);
         return token;
+    }
+
+    public void verifyAccount(String token) {
+        Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
+       verificationToken.orElseThrow(()->new SpringRedditException("Invalid Token"));
+        fetchUserAndEnable(verificationToken.get());
+
+    }
+    @Transactional
+    private void fetchUserAndEnable(VerificationToken verificationToken) {
+        String username = verificationToken.getUser().getUsername();
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new SpringRedditException("User Not Found with id - " + username));
+        user.setEnabled(true);
+        userRepository.save(user);
     }
 }
