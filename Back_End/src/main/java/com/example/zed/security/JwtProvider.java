@@ -16,6 +16,7 @@ import java.sql.Date;
 import java.time.Instant;
 
 //import static io.jsonwebtoken.Jwts.parserBuilder;
+import static io.jsonwebtoken.Jwts.parser;
 import static java.util.Date.from;
 
 @Service
@@ -64,29 +65,28 @@ public class JwtProvider {
         }
     }
 
-//    public boolean validateToken(String jwt) {
-//        parserBuilder().setSigningKey(getPublickey()).build().parseClaimsJws(jwt);
-//        return true;
-//    }
+    public boolean validateToken(String jwt) {
+        parser().setSigningKey(getPublickey()).parseClaimsJws(jwt);
+        return true;
+    }
 //
-//    private PublicKey getPublickey() {
-//        try {
-//            return keyStore.getCertificate("springblog").getPublicKey();
-//        } catch (KeyStoreException e) {
-//            throw new SpringRedditException("Exception occured while " +
-//                    "retrieving public key from keystore", e);
-//        }
-//    }
+    private PublicKey getPublickey() {
+        try {
+            return keyStore.getCertificate("springblog").getPublicKey();
+        } catch (KeyStoreException e) {
+            throw new SpringRedditException("Exception occured while " +
+                    "retrieving public key from keystore", e);
+        }
+    }
 //
-//    public String getUsernameFromJwt(String token) {
-//        Claims claims = parserBuilder()
-//                .setSigningKey(getPublickey())
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody();
-//
-//        return claims.getSubject();
-//    }
+    public String getUsernameFromJwt(String token) {
+        Claims claims = parser()
+                .setSigningKey(getPublickey())
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
+    }
 //
 //    public Long getJwtExpirationInMillis() {
 //        return jwtExpirationInMillis;
