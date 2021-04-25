@@ -33,7 +33,14 @@ public class SubredditController {
                 .status(HttpStatus.OK)
                 .body(subredditService.getAll());
     }
-//
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SubredditDto> getSubreddits(@PathVariable Long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(subredditService.getSubreddit(id));
+    }
+
 //    @GetMapping(ID_POSTS_ALL)
 //    public List<PostResponse> getAllPostsInSubreddit(@PathVariable Long id) {
 //        return subredditService.getAllPosts(id);
