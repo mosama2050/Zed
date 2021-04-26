@@ -15,7 +15,7 @@ import java.security.cert.CertificateException;
 import java.sql.Date;
 import java.time.Instant;
 
-//import static io.jsonwebtoken.Jwts.parserBuilder;
+
 import static io.jsonwebtoken.Jwts.parser;
 import static java.util.Date.from;
 
@@ -23,8 +23,8 @@ import static java.util.Date.from;
 public class JwtProvider {
 
     private KeyStore keyStore;
-//    @Value("${jwt.expiration.time}")
-//    private Long jwtExpirationInMillis;
+    @Value("${jwt.expiration.time}")
+    private Long jwtExpirationInMillis;
 
     @PostConstruct
     public void init() {
@@ -42,20 +42,20 @@ public class JwtProvider {
         org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
         return Jwts.builder()
                 .setSubject(principal.getUsername())
-//                .setIssuedAt(from(Instant.now()))
+                .setIssuedAt(from(Instant.now()))
                 .signWith(getPrivateKey())
-//                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
+                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
                 .compact();
     }
 
-//    public String generateTokenWithUserName(String username) {
-//        return Jwts.builder()
-//                .setSubject(username)
-//                .setIssuedAt(from(Instant.now()))
-//                .signWith(getPrivateKey())
-//                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
-//                .compact();
-//    }
+    public String generateTokenWithUserName(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(from(Instant.now()))
+                .signWith(getPrivateKey())
+                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
+                .compact();
+    }
 
     private PrivateKey getPrivateKey() {
         try {
@@ -87,8 +87,8 @@ public class JwtProvider {
 
         return claims.getSubject();
     }
-//
-//    public Long getJwtExpirationInMillis() {
-//        return jwtExpirationInMillis;
-//    }
+
+    public Long getJwtExpirationInMillis() {
+        return jwtExpirationInMillis;
+    }
 }
