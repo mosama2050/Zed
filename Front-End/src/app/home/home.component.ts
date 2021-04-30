@@ -10,16 +10,16 @@ import {PostService} from '../shared/post.service';
 export class HomeComponent implements OnInit {
 
 
-  posts: Array<PostModel> = [];
+  posts$: Array<PostModel> = [];
 
   constructor(private postService: PostService) {
     this.postService.getAllPosts().subscribe(post => {
-      this.posts = post;
+      this. posts$ = post;
     });
   }
 
   ngOnInit(): void {
-    console.log(this.posts)
+    console.log(this. posts$)
 
   }
 

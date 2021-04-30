@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.status;
-
+@CrossOrigin("http://localhost:4200")
 @RestController
 @RequestMapping("/api/posts/")
 @AllArgsConstructor
-public class PostController {
+
+    public class PostController {
 
     private final PostService postService;
 

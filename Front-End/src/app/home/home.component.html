@@ -1,3 +1,14 @@
-<p>home works!
-
-</p>
+<div class="reddit-body">
+  <div class="container">
+    <div class="row">
+      <hr />
+      <div class="col-md-9">
+        <app-post-title [data]="posts$"></app-post-title>
+      </div>
+      <div class="col-md-3">
+        <app-sidebar></app-sidebar>
+        <app-subreddit-sidebar></app-subreddit-sidebar>
+      </div>
+    </div>
+  </div>
+</div>

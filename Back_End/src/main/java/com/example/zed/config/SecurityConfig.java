@@ -38,15 +38,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
+        httpSecurity.cors().and()
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/auth/**")
                 .permitAll()
-                .antMatchers("/api/comments/query/**")
+                .antMatchers(HttpMethod.GET, "/api/subreddit")
                 .permitAll()
-                .antMatchers("/api/posts/query/**")
+                .antMatchers(HttpMethod.GET, "/api/posts/")
                 .permitAll()
-                .antMatchers("/api/subreddit/query/**")
+                .antMatchers(HttpMethod.GET, "/api/posts/**")
                 .permitAll()
                 .antMatchers("/v2/api-docs",
                         "/configuration/ui",
@@ -57,8 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .anyRequest()
                 .authenticated();
-        httpSecurity.addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);
-
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class);
     }
 
     @Autowired

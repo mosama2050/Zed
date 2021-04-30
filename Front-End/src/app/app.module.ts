@@ -13,14 +13,18 @@ import {NgxWebstorageModule} from 'ngx-webstorage';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToastrModule} from 'ngx-toastr';
 import { HomeComponent } from './home/home.component';
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { PostTitleComponent } from './shared/post-title/post-title.component';
+import { VoteButtonComponent } from './shared/vote-button/vote-button.component';
+import { SubredditSidebarComponent } from './shared/subreddit-sidebar/subreddit-sidebar.component';
+import { SidebarComponent } from './shared/sidebar/sidebar.component';
 
 
 const routes: Routes = [
   { path: 'sign-up', component: SignupComponent },
   { path: 'login', component: SigninComponent },
-  // http://localhost:4200/S
-  {path: '', redirectTo: '/',pathMatch: 'full'},
+
+  {path: '', component:HomeComponent},
   // if user enter any thing without all routes
   {path: '**', redirectTo: '/',pathMatch: 'full'},
 
@@ -32,7 +36,11 @@ const routes: Routes = [
     HeaderComponent,
     SignupComponent,
     SigninComponent,
-    HomeComponent
+    HomeComponent,
+    PostTitleComponent,
+    VoteButtonComponent,
+    SubredditSidebarComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +50,7 @@ const routes: Routes = [
     NgxWebstorageModule.forRoot(),
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
+    FontAwesomeModule,
 
   ],
   providers: [],

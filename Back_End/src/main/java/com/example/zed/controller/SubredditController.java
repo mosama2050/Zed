@@ -12,6 +12,7 @@ import java.util.List;
 
 import static com.example.zed.util.ApiPaths.*;
 
+@CrossOrigin("http://localhost:4200")
 
 @RestController
 @RequestMapping("/api/subreddit")
