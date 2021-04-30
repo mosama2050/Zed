@@ -3,7 +3,8 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {SigninRequestPayload} from './signin.request.payload';
 import {AuthService} from '../shared/auth.service';
 import {ToastrService} from 'ngx-toastr';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {throwError} from 'rxjs';
 
 @Component({
   selector: 'app-signin',
@@ -18,7 +19,7 @@ export class SigninComponent implements OnInit {
   isError: boolean;
 
 
-  constructor(private authService: AuthService, private router: Router, private toastr: ToastrService) {
+  constructor(private authService: AuthService, private activatedRoute: ActivatedRoute, private router: Router, private toastr: ToastrService) {
     this.signingRequestPayload = {
       username: '',
       password: ''
@@ -31,6 +32,15 @@ export class SigninComponent implements OnInit {
       username: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required)
     });
+
+    this.activatedRoute.queryParams
+      .subscribe(params => {
+        if (params.registered !== undefined && params.registered === 'true') {
+          this.toastr.success('Signup Successful');
+          this.registerSuccessMessage = 'Please Check your inbox for activation email '
+            + 'activate your account before you Login!';
+        }
+      });
   }
 
   login() {
@@ -39,10 +49,12 @@ export class SigninComponent implements OnInit {
     this.signingRequestPayload.password=this.loginForm.get('password' ).value;
 
     this.authService.signin(this.signingRequestPayload).subscribe(data => {
-
-      console.log("login successful");
-
+      this.isError = false;
+      this.router.navigateByUrl('');
+      this.toastr.success('Login Successful');
+    }, error => {
+      this.isError = true;
+      throwError(error);
     });
-
   }
 }

@@ -12,6 +12,7 @@ import { SigninComponent } from './auth/signin/signin.component';
 import {NgxWebstorageModule} from 'ngx-webstorage';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToastrModule} from 'ngx-toastr';
+import { HomeComponent } from './home/home.component';
 
 
 
@@ -30,7 +31,8 @@ const routes: Routes = [
     AppComponent,
     HeaderComponent,
     SignupComponent,
-    SigninComponent
+    SigninComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
